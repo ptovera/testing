@@ -1,6 +1,25 @@
+sudo: required
 language: python
-python:
-  - "3.7"
-install: "pip install -r requirement.txt"
-script: coverage run unittest_api.py
-after_success: bash <(curl -s https://codecov.io/bash)
+services:
+- docker
+
+script:
+- docker image build -t kazirys21/dockertest1 .
+
+after_success:
+  #log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #take built images and push to DOcker hub
+  - docker push pctovera/helloworld01
+  #test
+
+#deploy:
+  #provider: elasticbeanstalk
+  #region: "us-east-1"
+  #app: "dtest"
+  #env: "Dtest-env"
+  #bucket_name: "elasticbeanstalk-us-east-1"
+  #on:
+    #branch: master
+  #access_key_id: $AWS_ACCESS_KEY
+  #secret_access_key: $AWS_SECRET_KEY
